@@ -16,14 +16,14 @@ PsicoAgenda es una solución integral para la administración de consultorios ps
 ## 🛠️ Stack Tecnológico
 
 ### Backend
-- **Framework**: [Laravel 11](https://laravel.com)
-- **Autenticación**: [Laravel Breeze](https://laravel.com/docs/11.x/breeze)
+- **Framework**: [Laravel 12](https://laravel.com)
+- **Autenticación**: [Laravel Breeze](https://laravel.com/docs/12.x/breeze)
 - **Base de Datos**: MySQL
 - **API**: RESTful API con validación
 - **Testing**: PHPUnit / Pest
 
 ### Frontend
-- **Framework**: [Next.js 15](https://nextjs.org)
+- **Framework**: [Next.js 16](https://nextjs.org)
 - **Lenguaje**: TypeScript
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 - **Package Manager**: pnpm
