@@ -154,7 +154,10 @@ export function NewEventDialog({
 
                     setFieldValue('titulo', nuevoTitulo)
                   }}>
-                  <option value="" selected>
+                  <option
+                    defaultValue={initialValues.pacienteId}
+                    value=""
+                    selected>
                     Seleccionar paciente...
                   </option>
                   {patients
