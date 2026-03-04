@@ -8,8 +8,6 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navigation user={user} />
-
       {/* Page Content */}
       <main>{children}</main>
     </div>

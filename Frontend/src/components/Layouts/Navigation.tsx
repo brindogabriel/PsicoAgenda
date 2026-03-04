@@ -13,14 +13,20 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import { UserType } from '@/types/User'
 import { useAuth } from '@/hooks/auth'
 
-const Navigation = ({ user }: { user: UserType }) => {
+type NavProps = {
+  user: UserType
+  theme?: 'light' | 'dark'
+  toggleTheme?: () => void
+}
+
+const Navigation = ({ user, theme, toggleTheme }: NavProps) => {
   const pathname = usePathname()
 
   const { logout } = useAuth({})
   const [open, setOpen] = useState<boolean>(false)
 
   return (
-    <nav className="bg-white border-b border-gray-100">
+    <nav className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
       {/* Primary Navigation Menu */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -40,14 +46,43 @@ const Navigation = ({ user }: { user: UserType }) => {
             </div>
           </div>
 
-          {/* Settings Dropdown */}
-          <div className="hidden sm:flex sm:items-center sm:ml-6">
+          {/* Right controls */}
+          <div className="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
+            <Link href="/pacientes/nuevo">
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors">
+                Agregar Paciente
+              </button>
+            </Link>
+
+            <button
+              onClick={() => toggleTheme && toggleTheme()}
+              className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Cambiar tema">
+              {theme === 'dark' ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-yellow-300"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path d="M10 2a.75.75 0 01.75.75V4a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zM10 16a.75.75 0 01.75.75V18a.75.75 0 01-1.5 0v-1.25A.75.75 0 0110 16zM4.22 4.22a.75.75 0 011.06 0l.88.88a.75.75 0 11-1.06 1.06l-.88-.88a.75.75 0 010-1.06zM14.84 14.84a.75.75 0 011.06 0l.88.88a.75.75 0 11-1.06 1.06l-.88-.88a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75H4a.75.75 0 010 1.5H2.75A.75.75 0 012 10zM16 10a.75.75 0 01.75-.75H18a.75.75 0 010 1.5h-1.25A.75.75 0 0116 10zM4.22 15.78a.75.75 0 010-1.06l.88-.88a.75.75 0 111.06 1.06l-.88.88a.75.75 0 01-1.06 0zM14.84 5.16a.75.75 0 010-1.06l.88-.88a.75.75 0 111.06 1.06l-.88.88a.75.75 0 01-1.06 0zM10 6.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-700"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path d="M17.293 13.293A8 8 0 116.707 2.707a7 7 0 1010.586 10.586z" />
+                </svg>
+              )}
+            </button>
+
             <Dropdown
               align="right"
               width={48}
               trigger={
-                <button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-hidden transition duration-150 ease-in-out">
-                  <div>{user?.name}</div>
+                <button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white focus:outline-hidden transition duration-150 ease-in-out">
+                  <div className="hidden sm:block mr-2">{user?.name}</div>
 
                   <div className="ml-1">
                     <svg

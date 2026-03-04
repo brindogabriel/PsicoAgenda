@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${nunito.className} text-gray-900 antialiased`}>
+      <body
+        className={`${nunito.className} text-gray-900 antialiased`}
+        suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -8,6 +8,10 @@ import { useAuth } from '@/hooks/auth'
 import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 
+import { ArrowLeft } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { RegisterForm } from '@/components/register/register-form'
+
 interface Values {
   name: string
   email: string
@@ -48,122 +52,144 @@ const RegisterPage = () => {
   })
 
   return (
-    <AuthCard
-      logo={
-        <Link href="/">
-          <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
-        </Link>
-      }>
-      <Formik
-        onSubmit={submitForm}
-        validationSchema={RegisterSchema}
-        initialValues={{
-          name: '',
-          email: '',
-          password: '',
-          password_confirmation: '',
-        }}>
-        <Form className="space-y-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="undefined block font-medium text-sm text-gray-700">
-              Name
-            </label>
-
-            <Field
-              id="name"
-              name="name"
-              className="block mt-1 w-full rounded-md shadow-xs border-gray-300 focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-
-            <ErrorMessage
-              name="name"
-              component="span"
-              className="text-xs text-red-500"
-            />
+    <div className="relative flex min-h-svh">
+      {/* Left panel — branding */}
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between bg-accent p-12">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-foreground/20">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent-foreground">
+              <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12" />
+              <path d="M12 2c-2.76 0-5 4.48-5 10s2.24 10 5 10" />
+              <path d="M2 12h10" />
+            </svg>
           </div>
+          <span className="text-xl font-bold tracking-tight text-accent-foreground">
+            PsicoAgenda
+          </span>
+        </div>
 
-          <div>
-            <label
-              htmlFor="email"
-              className="undefined block font-medium text-sm text-gray-700">
-              Email
-            </label>
-
-            <Field
-              id="email"
-              name="email"
-              type="email"
-              className="block mt-1 w-full rounded-md shadow-xs border-gray-300 focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-
-            <ErrorMessage
-              name="email"
-              component="span"
-              className="text-xs text-red-500"
-            />
+        <div className="max-w-md">
+          <h2 className="font-serif text-4xl leading-tight text-accent-foreground text-balance">
+            Unite a la plataforma pensada para tu practica.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-accent-foreground/80">
+            Crea tu cuenta y se parte de los profesionales de salud mental que
+            organizan su consultorio de forma mas simple.
+          </p>
+          <div className="mt-8 flex flex-col gap-3">
+            <FeaturePill text="Registro rapido y sin costo" />
+            <FeaturePill text="Datos protegidos desde el inicio" />
+            <FeaturePill text="Acceso anticipado a nuevas funciones" />
           </div>
+        </div>
 
-          <div className="">
-            <label
-              htmlFor="password"
-              className="undefined block font-medium text-sm text-gray-700">
-              Password
-            </label>
+        <p className="text-sm text-accent-foreground/60">
+          Proyecto en desarrollo activo
+        </p>
+      </div>
 
-            <Field
-              id="password"
-              name="password"
-              type="password"
-              className="block mt-1 w-full rounded-md shadow-xs border-gray-300 focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
-            />
+      {/* Right panel — register form */}
+      <div className="flex w-full flex-col lg:w-1/2">
+        {/* Top bar */}
+        <div className="flex items-center justify-between p-6">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            Volver al inicio
+          </Link>
+          <ThemeToggle />
+        </div>
 
-            <ErrorMessage
-              name="password"
-              component="span"
-              className="text-xs text-red-500"
-            />
+        {/* Form area */}
+        <div className="flex flex-1 items-center justify-center px-6 pb-12">
+          <div className="w-full max-w-sm">
+            {/* Mobile logo */}
+            <div className="mb-8 flex items-center gap-2 lg:hidden">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-accent-foreground">
+                  <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12" />
+                  <path d="M12 2c-2.76 0-5 4.48-5 10s2.24 10 5 10" />
+                  <path d="M2 12h10" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold tracking-tight text-foreground">
+                PsicoAgenda
+              </span>
+            </div>
+
+            <div className="mb-8">
+              <h1 className="font-serif text-3xl text-foreground">
+                Crear cuenta
+              </h1>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Completa tus datos para registrarte en PsicoAgenda. dsad 
+              </p>
+            </div>
+
+            <RegisterForm />
+
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                {'Ya tenes cuenta? '}
+                <Link
+                  href="/login"
+                  className="font-medium text-accent hover:text-accent/80 transition-colors">
+                  Iniciar sesion
+                </Link>
+              </p>
+            </div>
+
+            {/* Dev notice */}
+            <div className="mt-8 rounded-lg border border-border bg-secondary/50 px-4 py-3 text-center">
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                Este sistema se encuentra en desarrollo activo. Tu registro sera
+                procesado cuando la plataforma este disponible.
+              </p>
+            </div>
           </div>
+        </div>
+      </div>
+      </div>
+      
 
-          <div className="">
-            <label
-              htmlFor="password"
-              className="undefined block font-medium text-sm text-gray-700">
-              Confirm Password
-            </label>
-
-            <Field
-              id="password_confirmation"
-              name="password_confirmation"
-              type="password"
-              className="block mt-1 w-full rounded-md shadow-xs border-gray-300 focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-
-            <ErrorMessage
-              name="password_confirmation"
-              component="span"
-              className="text-xs text-red-500"
-            />
-          </div>
-
-          <div className="flex items-center justify-end mt-4">
-            <Link
-              href="/login"
-              className="underline text-sm text-gray-600 hover:text-gray-900">
-              Already registered?
-            </Link>
-
-            <button
-              type="submit"
-              className="ml-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-              Register
-            </button>
-          </div>
-        </Form>
-      </Formik>
-    </AuthCard>
   )
 }
 
+
+function FeaturePill({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg bg-accent-foreground/10 px-4 py-2.5">
+      <svg
+        className="h-4 w-4 shrink-0 text-accent-foreground"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span className="text-sm font-medium text-accent-foreground">{text}</span>
+    </div>
+  )
+}
 export default RegisterPage

@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Argentina/Buenos_Aires',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +122,21 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+     /*
+    |--------------------------------------------------------------------------
+    | Google OAuth Configuration
+    |--------------------------------------------------------------------------
+    | This section is for configuring Google OAuth credentials for authentication.
+    | You need to set the GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and
+    | GOOGLE_REDIRECT_URI in your .env file to enable Google OAuth functionality.
+    |
+    */
+
+    'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT_URI'),
+],
 
 ];

@@ -8,6 +8,24 @@ importers:
 
   .:
     dependencies:
+      '@fullcalendar/core':
+        specifier: ^6.1.20
+        version: 6.1.20
+      '@fullcalendar/daygrid':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
+      '@fullcalendar/google-calendar':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
+      '@fullcalendar/interaction':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
+      '@fullcalendar/react':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@fullcalendar/timegrid':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
       '@headlessui/react':
         specifier: ^2.2.9
         version: 2.2.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -98,6 +116,9 @@ importers:
       '@tailwindcss/forms':
         specifier: ^0.5.11
         version: 0.5.11(tailwindcss@4.1.18)
+      '@tanstack/react-query':
+        specifier: ^5.90.21
+        version: 5.90.21(react@19.2.4)
       autoprefixer:
         specifier: ^10.4.24
         version: 10.4.24(postcss@8.5.6)
@@ -337,6 +358,36 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fullcalendar/core@6.1.20':
+    resolution: {integrity: sha512-1cukXLlePFiJ8YKXn/4tMKsy0etxYLCkXk8nUCFi11nRONF2Ba2CD5b21/ovtOO2tL6afTJfwmc1ed3HG7eB1g==}
+
+  '@fullcalendar/daygrid@6.1.20':
+    resolution: {integrity: sha512-AO9vqhkLP77EesmJzuU+IGXgxNulsA8mgQHynclJ8U70vSwAVnbcLG9qftiTAFSlZjiY/NvhE7sflve6cJelyQ==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+
+  '@fullcalendar/google-calendar@6.1.20':
+    resolution: {integrity: sha512-8IxW4U1pzTIk4VgJh22lZ+1+P+1kpi6hQgwQsI+wFbbqrcdtY5mGcrW/n2Rhjh64AZl2IdVDgvExTtZJ0UVqsg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+
+  '@fullcalendar/interaction@6.1.20':
+    resolution: {integrity: sha512-p6txmc5txL0bMiPaJxe2ip6o0T384TyoD2KGdsU6UjZ5yoBlaY+dg7kxfnYKpYMzEJLG58n+URrHr2PgNL2fyA==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+
+  '@fullcalendar/react@6.1.20':
+    resolution: {integrity: sha512-1w0pZtceaUdfAnxMSCGHCQalhi+mR1jOe76sXzyAXpcPz/Lf0zHSdcGK/U2XpZlnQgQtBZW+d+QBnnzVQKCxAA==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+      react: ^16.7.0 || ^17 || ^18 || ^19
+      react-dom: ^16.7.0 || ^17 || ^18 || ^19
+
+  '@fullcalendar/timegrid@6.1.20':
+    resolution: {integrity: sha512-4H+/MWbz3ntA50lrPif+7TsvMeX3R1GSYjiLULz0+zEJ7/Yfd9pupZmAwUs/PBpA6aAcFmeRr0laWfcz1a9V1A==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
 
   '@headlessui/react@2.2.9':
     resolution: {integrity: sha512-Mb+Un58gwBn0/yWZfyrCh0TJyurtT+dETj7YHleylHk5od3dv2XqETPGWMyQ5/7sYN7oWdyM1u9MvC0OC8UmzQ==}
@@ -1431,6 +1482,14 @@ packages:
 
   '@tailwindcss/postcss@4.1.18':
     resolution: {integrity: sha512-Ce0GFnzAOuPyfV5SxjXGn0CubwGcuDB0zcdaPuCSzAa/2vII24JTkH+I6jcbXLb1ctjZMZZI6OjDaLPJQL1S0g==}
+
+  '@tanstack/query-core@5.90.20':
+    resolution: {integrity: sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg==}
+
+  '@tanstack/react-query@5.90.21':
+    resolution: {integrity: sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/react-virtual@3.13.18':
     resolution: {integrity: sha512-dZkhyfahpvlaV0rIKnvQiVoWPyURppl6w4m9IwMDpuIjcJ1sD9YGWrt0wISvgU7ewACXx2Ct46WPgI6qAD4v6A==}
@@ -2765,6 +2824,9 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact@10.12.1:
+    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -3395,6 +3457,33 @@ snapshots:
       tabbable: 6.4.0
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fullcalendar/core@6.1.20':
+    dependencies:
+      preact: 10.12.1
+
+  '@fullcalendar/daygrid@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+
+  '@fullcalendar/google-calendar@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+
+  '@fullcalendar/interaction@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+
+  '@fullcalendar/react@6.1.20(@fullcalendar/core@6.1.20)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+
+  '@fullcalendar/timegrid@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+      '@fullcalendar/daygrid': 6.1.20(@fullcalendar/core@6.1.20)
 
   '@headlessui/react@2.2.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -4434,6 +4523,13 @@ snapshots:
       '@tailwindcss/oxide': 4.1.18
       postcss: 8.5.6
       tailwindcss: 4.1.18
+
+  '@tanstack/query-core@5.90.20': {}
+
+  '@tanstack/react-query@5.90.21(react@19.2.4)':
+    dependencies:
+      '@tanstack/query-core': 5.90.20
+      react: 19.2.4
 
   '@tanstack/react-virtual@3.13.18(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -5888,6 +5984,8 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  preact@10.12.1: {}
 
   prelude-ls@1.2.1: {}
 
