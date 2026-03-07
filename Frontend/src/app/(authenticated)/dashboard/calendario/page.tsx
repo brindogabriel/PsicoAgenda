@@ -10,14 +10,15 @@ import { mockAppointments, type Appointment } from '@/lib/types'
 import { usePatients } from '@/hooks/use-patients'
 import { Patient } from '@/lib/types'
 import { Plus } from 'lucide-react'
+import { useAppointments } from '@/hooks/use-appointments'
+import axios from '@/lib/axios'
 
 export default function CalendarioPage() {
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(mockAppointments)
+ const { appointments, isLoading, mutate, error } = useAppointments()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [defaultDate, setDefaultDate] = useState<string | undefined>()
   const [defaultTime, setDefaultTime] = useState<string | undefined>()
-  const { patients, isLoading, error, mutate } = usePatients(() => [])
+  const { patients } = usePatients()
 
   const handleDateSelect = useCallback((date: string, time?: string) => {
     setDefaultDate(date)
@@ -25,24 +26,32 @@ export default function CalendarioPage() {
     setDialogOpen(true)
   }, [])
 
-  function handleSaveEvent(values: NewEventValues) {
-    const patient = patients.find(p => p.id === values.pacienteId)
-    const newAppointment: Appointment = {
-      id: crypto.randomUUID(),
-      pacienteId: values.pacienteId,
-      pacienteNombre: patient
-        ? `${patient.nombre} ${patient.apellido}`
-        : 'Paciente',
-      tipo: values.tipo,
-      fecha: values.fecha,
-      horaInicio: values.horaInicio,
-      horaFin: values.horaFin,
-      estado: 'pendiente',
-      notas: values.notas,
-    }
-    setAppointments(prev => [...prev, newAppointment])
-  }
+  async function handleSaveEvent(values: NewEventValues) {
+    try {
+      const start = new Date(`${values.fecha}T${values.horaInicio}`)
+      const end = new Date(start.getTime() + values.duracion * 60000)
 
+      const pad = (n: number) => String(n).padStart(2, '0')
+
+      const fechaInicio = `${values.fecha} ${values.horaInicio}`
+      const fechaFin = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(
+        end.getDate(),
+      )} ${pad(end.getHours())}:${pad(end.getMinutes())}`
+
+      const payload = {
+        paciente_id: Number(values.pacienteId),
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
+        modalidad: 'online',
+      }
+
+      await axios.post('/api/turnos', payload)
+
+      await mutate()
+    } catch (err) {
+      console.error(err)
+    }
+  }
   function handleNewClick() {
     const today = new Date()
     setDefaultDate(
@@ -81,8 +90,6 @@ export default function CalendarioPage() {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         patients={patients}
-        defaultDate={defaultDate}
-        defaultTime={defaultTime}
         onSave={handleSaveEvent}
       />
     </div>

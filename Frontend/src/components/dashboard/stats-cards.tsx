@@ -11,9 +11,17 @@ interface StatsCardsProps {
 
 export function StatsCards({ appointments, patients }: StatsCardsProps) {
   const [mounted, setMounted] = useState(false)
+  const [now, setNow] = useState<Date | null>(null)
 
   useEffect(() => {
     setMounted(true)
+    setNow(new Date())
+
+    const interval = setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const todayAppointments = mounted
@@ -39,6 +47,41 @@ export function StatsCards({ appointments, patients }: StatsCardsProps) {
       })()
     : undefined
 
+  const nextAppointmentCountdown =
+    mounted && nextAppointment && now
+      ? (() => {
+          const [h, m] = nextAppointment.horaInicio.split(':').map(Number)
+          const target = new Date(now)
+          target.setHours(h, m, 0, 0)
+
+          const diffMs = target.getTime() - now.getTime()
+          const diffSeconds = Math.floor(diffMs / 1000)
+
+          if (diffSeconds <= 0) {
+            return 'Ahora'
+          }
+
+          if (diffSeconds < 60) {
+            return `En ${diffSeconds} segundos`
+          }
+
+          const diffMinutes = Math.floor(diffSeconds / 60)
+
+          if (diffMinutes < 60) {
+            return `En ${diffMinutes} minutos`
+          }
+
+          const hours = Math.floor(diffMinutes / 60)
+          const minutes = diffMinutes % 60
+
+          if (minutes === 0) {
+            return `En ${hours} horas`
+          }
+
+          return `En ${hours}h ${minutes}min`
+        })()
+      : undefined
+
   const stats = [
     {
       label: 'Citas hoy',
@@ -63,7 +106,9 @@ export function StatsCards({ appointments, patients }: StatsCardsProps) {
         : '-',
       sub: mounted
         ? nextAppointment
-          ? nextAppointment.pacienteNombre
+          ? nextAppointmentCountdown
+            ? `${nextAppointment.pacienteNombre} · ${nextAppointmentCountdown}`
+            : nextAppointment.pacienteNombre
           : 'Sin citas pendientes'
         : '-',
       icon: Clock,

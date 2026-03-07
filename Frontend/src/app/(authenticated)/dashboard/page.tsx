@@ -4,10 +4,12 @@ import { StatsCards } from '@/components/dashboard/stats-cards'
 import { UpcomingAppointments } from '@/components/dashboard/upcoming-appointments'
 import { useAuth } from '@/hooks/auth'
 import { usePatients } from '@/hooks/use-patients'
+import { useAppointments } from '@/hooks/use-appointments'
 
 export default function DashboardPage() {
-  const { user } = useAuth({ middleware: 'auth' })
-  const { patients } = usePatients()
+    const { user } = useAuth({ middleware: 'auth' })
+    const { patients } = usePatients()
+    const { appointments } = useAppointments()
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -20,8 +22,8 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <StatsCards appointments={[]} patients={patients} />
-      <UpcomingAppointments appointments={[]} />
+      <StatsCards appointments={appointments} patients={patients} />
+      <UpcomingAppointments appointments={appointments} />
     </div>
   )
 }

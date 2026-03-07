@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { PatientList } from '@/components/dashboard/patient-list'
 import { PatientFormDialog } from '@/components/dashboard/patient-form-dialog'
 import { usePatients } from '@/hooks/use-patients'
-import { Patient } from '@/lib/types'
+import { Patient, PatientFormData } from '@/lib/types'
 import axios from '@/lib/axios'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 export default function PacientesPage() {
-  const { patients, isLoading, error, mutate } = usePatients(() => [])
+  const { patients, isLoading, error, mutate } = usePatients()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
 
@@ -18,7 +18,7 @@ export default function PacientesPage() {
   const [selectedForDelete, setSelectedForDelete] = useState<Patient | null>(
     null,
   )
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   function handleAdd() {
     setEditingPatient(null)
@@ -52,15 +52,13 @@ export default function PacientesPage() {
       console.error(err)
       // could show a toast here
     } finally {
-      setDeletingId(null)
+      setDeletingId(undefined)
       setSelectedForDelete(null)
       setConfirmOpen(false)
     }
   }
 
-  async function handleSave(
-    values: Omit<Patient, 'id' | 'estado' | 'createdAt'>,
-  ) {
+  async function handleSave(values: PatientFormData) {
     try {
       if (editingPatient) {
         await axios.put(`/api/pacientes/${editingPatient.id}`, values)

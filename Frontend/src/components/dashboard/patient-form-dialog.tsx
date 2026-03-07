@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { X } from 'lucide-react'
-import type { Patient } from '@/lib/types'
+import type { Patient, PatientFormData } from '@/lib/types'
 
 const patientSchema = Yup.object({
   nombre: Yup.string().required('El nombre es obligatorio'),
@@ -19,7 +19,7 @@ interface PatientFormDialogProps {
   open: boolean
   onClose: () => void
   patient?: Patient | null
-  onSave: (values: Omit<Patient, 'id' | 'estado' | 'createdAt'>) => void
+  onSave: (values: PatientFormData) => void
 }
 
 const inputBase =
@@ -47,14 +47,11 @@ export function PatientFormDialog({
 
   if (!open) return null
 
-  const initialValues = {
+  const initialValues: PatientFormData = {
     nombre: patient?.nombre ?? '',
     apellido: patient?.apellido ?? '',
     email: patient?.email ?? '',
     telefono: patient?.telefono ?? '',
-    fechaNacimiento: patient?.fechaNacimiento ?? '',
-    tipoTerapia: patient?.tipoTerapia ?? '',
-    notas: patient?.notas ?? '',
   }
 
   return (
@@ -87,7 +84,7 @@ export function PatientFormDialog({
             : 'Completa los datos para registrar un nuevo paciente.'}
         </p>
 
-        <Formik
+        <Formik<PatientFormData>
           initialValues={initialValues}
           validationSchema={patientSchema}
           enableReinitialize
@@ -176,60 +173,7 @@ export function PatientFormDialog({
                     className="text-xs text-red-500"
                   />
                 </div>
-                {/* <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="fechaNacimiento"
-                    className="text-sm font-medium text-card-foreground">
-                    Fecha de nacimiento
-                  </label>
-                  <Field
-                    id="fechaNacimiento"
-                    name="fechaNacimiento"
-                    type="date"
-                    className={`${inputBase} ${touched.fechaNacimiento && errors.fechaNacimiento ? 'border-red-500 focus:ring-red-500' : ''}`}
-                  />
-                  <ErrorMessage
-                    name="fechaNacimiento"
-                    component="p"
-                    className="text-xs text-red-500"
-                  />
-                </div> */}
               </div>
-
-              {/* <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="tipoTerapia"
-                  className="text-sm font-medium text-card-foreground">
-                  Tipo de terapia
-                </label>
-                <Field
-                  id="tipoTerapia"
-                  name="tipoTerapia"
-                  placeholder="Terapia individual, de pareja, etc."
-                  className={`${inputBase} ${touched.tipoTerapia && errors.tipoTerapia ? 'border-red-500 focus:ring-red-500' : ''}`}
-                />
-                <ErrorMessage
-                  name="tipoTerapia"
-                  component="p"
-                  className="text-xs text-red-500"
-                />
-              </div> */}
-
-              {/* <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="notas"
-                  className="text-sm font-medium text-card-foreground">
-                  Notas
-                </label>
-                <Field
-                  as="textarea"
-                  id="notas"
-                  name="notas"
-                  rows={3}
-                  placeholder="Observaciones, notas clinicas, etc."
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-colors resize-none"
-                />
-              </div> */}
 
               <div className="flex justify-end gap-3 pt-2">
                 <button

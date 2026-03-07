@@ -11,9 +11,7 @@ const eventSchema = Yup.object({
   pacienteId: Yup.string().required('Selecciona un paciente'),
   fecha: Yup.string().required('La fecha es obligatoria'),
   horaInicio: Yup.string().required('La hora de inicio es obligatoria'),
-  horaFin: Yup.string().required('La hora de fin es obligatoria'),
   tipo: Yup.string().required('El tipo de sesion es obligatorio'),
-  notas: Yup.string(),
   enviarInvitacion: Yup.boolean(),
   repetir: Yup.boolean(),
   frecuencia: Yup.string(),
@@ -22,6 +20,8 @@ const eventSchema = Yup.object({
 })
 
 export interface NewEventValues {
+  horaFin: string
+  notas: string
   titulo: string
   pacienteId: string
   fecha: string
@@ -84,6 +84,8 @@ export function NewEventDialog({
     tipo: 'Terapia individual',
     diasSemana: [],
     fechaFinRepeticion: '',
+    horaFin: '',
+    notas: '',
   }
 
   return (
@@ -109,7 +111,10 @@ export function NewEventDialog({
           initialValues={initialValues}
           validationSchema={eventSchema}
           onSubmit={(values, { setSubmitting }) => {
+            console.log('SUBMIT', values)
+
             onSave(values)
+
             setSubmitting(false)
             onClose()
           }}>
@@ -154,10 +159,7 @@ export function NewEventDialog({
 
                     setFieldValue('titulo', nuevoTitulo)
                   }}>
-                  <option
-                    defaultValue={initialValues.pacienteId}
-                    value=""
-                    selected>
+                  <option defaultValue={initialValues.pacienteId} value="">
                     Seleccionar paciente...
                   </option>
                   {patients
@@ -199,12 +201,11 @@ export function NewEventDialog({
                   </Field>
                 </label>
               </div>
-
               {/* Tipo */}
               <label className="text-sm font-medium leading-none text-card-foreground">
                 Tipo
                 <Field as="select" name="tipo" className={selectBase}>
-                  <option value="" selected>
+                  <option value="" defaultValue={initialValues.tipo}>
                     Seleccionar tipo...
                   </option>
                   <option value="Terapia individual">Terapia individual</option>
@@ -213,23 +214,7 @@ export function NewEventDialog({
                   <option value="Seguimiento">Seguimiento</option>
                 </Field>
               </label>
-              {/* Notas */}
-              <label className="text-sm font-medium leading-none text-card-foreground">
-                Notas
-                <Field
-                  as="textarea"
-                  name="notas"
-                  rows={2}
-                  className={`${inputBase} w-full rounded-lg border px-3 py-2 text-sm
-                text-card-foreground`}
-                  placeholder="Notas"
-                />
-              </label>
-              <ErrorMessage
-                name="notas"
-                component="p"
-                className="text-xs text-red-500"
-              />
+
               <label className={`${inputBase} flex items-center gap-2`}>
                 <Field type="checkbox" name="repetir" />
                 <span>Repetir semanalmente</span>
@@ -276,7 +261,6 @@ export function NewEventDialog({
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
                   className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground hover:bg-accent/90 disabled:opacity-50 transition-colors">
                   <Send className="h-3.5 w-3.5" />
                   {values.enviarInvitacion

@@ -13,6 +13,11 @@ export interface Patient {
   createdAt: string
 }
 
+export type PatientFormData = Pick<
+  Patient,
+  "nombre" | "apellido" | "email" | "telefono"
+>
+
 export interface Appointment {
   id: string
   pacienteId: string

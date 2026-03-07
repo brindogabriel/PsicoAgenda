@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PacienteController;
-use App\Models\Paciente;
+use App\Http\Controllers\Api\TurnoController;
 
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -13,6 +13,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pacientes', PacienteController::class);
+    Route::apiResource('turnos', TurnoController::class);
 });
 
 
