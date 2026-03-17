@@ -187,3 +187,79 @@
 html{
     scroll-behavior: smooth;
 }
+/* FULL CALENDAR */
+.fc-psicoagenda .fc-timegrid-slot-label-cushion {
+    color: hsl(var(--muted-foreground));
+    font-size: 0.85rem;
+}
+
+.fc-psicoagenda .fc-event-title {
+    color: inherit;
+    font-weight: 500;
+}
+
+.fc-psicoagenda .fc-event {
+    background: #000;
+    color: #Fff;
+}
+
+.fc-psicoagenda .fc-timegrid-event {
+    background: red;
+}
+
+.fc-psicoagenda .fc-event-time {
+    color: inherit;
+    font-size: 0.75rem;
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.fc-psicoagenda .fc-timegrid-event {
+    padding: 2px 4px;
+
+    font-size: 0.8rem;
+}
+
+.fc-psicoagenda .fc-event-inner {
+    padding: 2px 4px;
+    overflow: hidden;
+}
+
+.fc-psicoagenda .fc-event-title {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-psicoagenda .fc-event-sub {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Encabezados (nombres de días) con tema claro/oscuro */
+
+
+.fc-psicoagenda .fc-col-header-cell-cushion {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.fc-psicoagenda .fc-toolbar-title {
+    font-weight: 700;
+}
+
+/* Feriados */
+.fc-psicoagenda .fc-feriado-event {
+    font-weight: 700;
+}
+
+
+.fc-psicoagenda .fc-button {
+    color: hsl(var(--foreground));
+}
+
+.fc-psicoagenda .fc-daygrid-day-number {
+    color: hsl(var(--foreground));
+}
