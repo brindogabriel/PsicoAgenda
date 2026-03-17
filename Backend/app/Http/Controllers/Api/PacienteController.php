@@ -44,6 +44,7 @@ class PacienteController extends Controller
     {
         $this->authorize('view', $paciente);
         return $paciente;
+
     }
 
     /**
@@ -75,7 +76,7 @@ class PacienteController extends Controller
         $this->authorize('delete', $paciente);
         $paciente->delete();
 
-        return response()->json(['message' => 'Paciente eliminado']);
+    return response()->noContent();
     }
 
 }

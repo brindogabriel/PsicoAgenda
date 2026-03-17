@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Paciente;
+use App\Models\Turno;
 use App\Models\User;
 use App\Policies\PacientePolicy;
+use App\Policies\TurnoPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Paciente::class => PacientePolicy::class,
+        Turno::class => TurnoPolicy::class,
     ];
 
     /**

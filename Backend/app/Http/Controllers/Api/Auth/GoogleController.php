@@ -16,19 +16,13 @@ class GoogleController extends Controller
     {
         $user = Socialite::driver('google')->stateless()->user();
 
-        // Aquí puedes manejar la lógica de autenticación o registro del usuario
-        // Por ejemplo, puedes buscar o crear un usuario en tu base de datos
-        // y luego generar un token de autenticación para el usuario
-
-        // Ejemplo de respuesta con el token de autenticación
         return response()->json([
             'token' => $token,
             'user' => $user,
         ]);
     }
 
-    // Alternativamente, si deseas redirigir al usuario a una página después de la autenticación
-
+   
     public function callback()
     {
         $googleUser = Socialite::driver('google')
