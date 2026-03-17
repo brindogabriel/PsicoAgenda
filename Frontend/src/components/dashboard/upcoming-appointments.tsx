@@ -31,6 +31,7 @@ export function UpcomingAppointments({
   appointments,
 }: UpcomingAppointmentsProps) {
   const today = new Date()
+  const now = new Date()
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
 
   const todayAppointments = appointments
@@ -52,13 +53,31 @@ export function UpcomingAppointments({
         ) : (
           todayAppointments.map(appointment => {
             const badge = estadoBadge[appointment.estado]
+            const [startHour, startMinute] = appointment.horaInicio
+              .split(':')
+              .map(Number)
+            const [endHour, endMinute] = appointment.horaFin
+              .split(':')
+              .map(Number)
+
+            const startDateTime = new Date(today)
+            startDateTime.setHours(startHour, startMinute, 0, 0)
+
+            const endDateTime = new Date(today)
+            endDateTime.setHours(endHour, endMinute, 0, 0)
+
+            const isNow =
+              now >= startDateTime &&
+              now <= endDateTime &&
+              appointment.estado !== 'cancelada'
+
             return (
               <div
                 key={appointment.id}
                 className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-4">
                   <span className="w-14 text-sm font-medium tabular-nums text-accent">
-                    {appointment.horaInicio}
+                    {isNow ? 'Ahora' : appointment.horaInicio}
                   </span>
                   <div>
                     <p className="text-sm font-semibold text-card-foreground">

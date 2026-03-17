@@ -1,28 +1,77 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { CalendarView } from '@/components/dashboard/calendar-view'
+import { useState, useCallback, useEffect, useMemo } from 'react'
+import {CalendarView} from '@/components/dashboard/calendar-view'
 import {
   NewEventDialog,
   type NewEventValues,
 } from '@/components/dashboard/new-event-dialog'
-import { mockAppointments, type Appointment } from '@/lib/types'
 import { usePatients } from '@/hooks/use-patients'
-import { Patient } from '@/lib/types'
+import { type Appointment } from '@/lib/types'
 import { Plus } from 'lucide-react'
 import { useAppointments } from '@/hooks/use-appointments'
 import axios from '@/lib/axios'
+import { AppointmentDetailsDialog } from '@/components/dashboard/appointment-details-dialog'
+import { toast } from 'react-toastify'
 
 export default function CalendarioPage() {
- const { appointments, isLoading, mutate, error } = useAppointments()
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [defaultDate, setDefaultDate] = useState<string | undefined>()
-  const [defaultTime, setDefaultTime] = useState<string | undefined>()
+  const { appointments, isLoading, mutate, error } = useAppointments()
   const { patients } = usePatients()
 
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const [selectedSlot, setSelectedSlot] = useState<{
+    fecha: string
+    hora: string
+  } | null>(null)
+
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    string | null
+        >(null)
+    
+    const [editingAppointment, setEditingAppointment] =
+      useState<Appointment | null>(null)
+
+  const selectedAppointment = useMemo(() => {
+    if (!selectedAppointmentId) return null
+    return (
+      appointments.find(
+        (a: { id: any }) => String(a.id) === String(selectedAppointmentId),
+      ) || null
+    )
+  }, [selectedAppointmentId, appointments])
+
+  function closeDialog() {
+    setDialogOpen(false)
+    setSelectedSlot(null)
+    setEditingAppointment(null)
+  }
+
+  // Click en un evento del calendario → abre detalles
+  function handleEventClick(id: string) {
+    setSelectedAppointmentId(id)
+    setDetailsOpen(true)
+  }
+
+  // Selección de slot vacío en el calendario → abre nueva cita
   const handleDateSelect = useCallback((date: string, time?: string) => {
-    setDefaultDate(date)
-    setDefaultTime(time)
+    setSelectedSlot({ fecha: date, hora: time || '09:00' })
+    setDialogOpen(true)
+  }, [])
+
+  // Botón "Nueva cita" en el header
+  function handleNewClick() {
+    const today = new Date()
+    const fecha = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    setSelectedSlot({ fecha, hora: '09:00' })
+    setDialogOpen(true)
+  }
+
+  // Editar desde AppointmentDetailsDialog
+  const handleEditEvent = useCallback((appointment: Appointment) => {
+    setEditingAppointment(appointment)
+    setSelectedSlot({ fecha: appointment.fecha, hora: appointment.horaInicio })
     setDialogOpen(true)
   }, [])
 
@@ -30,35 +79,60 @@ export default function CalendarioPage() {
     try {
       const start = new Date(`${values.fecha}T${values.horaInicio}`)
       const end = new Date(start.getTime() + values.duracion * 60000)
-
       const pad = (n: number) => String(n).padStart(2, '0')
-
-      const fechaInicio = `${values.fecha} ${values.horaInicio}`
-      const fechaFin = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(
-        end.getDate(),
-      )} ${pad(end.getHours())}:${pad(end.getMinutes())}`
 
       const payload = {
         paciente_id: Number(values.pacienteId),
-        fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin,
+        fecha_inicio: `${values.fecha} ${values.horaInicio}`,
+        fecha_fin: `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())} ${pad(end.getHours())}:${pad(end.getMinutes())}`,
         modalidad: 'online',
+        tipo: values.tipo,
+        notas: values.notas,
       }
 
-      await axios.post('/api/turnos', payload)
+      if (editingAppointment) {
+        await axios.put(`/api/turnos/${editingAppointment.id}`, payload)
+        toast.success('Turno actualizado')
+      } else {
+        await axios.post('/api/turnos', payload)
+        toast.success('Turno creado')
+      }
 
       await mutate()
-    } catch (err) {
+      closeDialog()
+    } catch (err: any) {
       console.error(err)
+      toast.error(err.response?.data?.message || 'Error al guardar turno')
     }
   }
-  function handleNewClick() {
-    const today = new Date()
-    setDefaultDate(
-      `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-    )
-    setDefaultTime('09:00')
-    setDialogOpen(true)
+
+  async function handleDeleteAppointment(id: string) {
+    try {
+      await axios.delete(`/api/turnos/${id}`)
+      await mutate()
+      setDetailsOpen(false)
+      toast.success('Turno eliminado correctamente')
+    } catch (err) {
+      toast.error('Error al eliminar el turno')
+    }
+  }
+
+  const handleEventDrop = async (info: any) => {
+    const event = info.event
+
+    const formatDate = (date: Date) =>
+      date.toLocaleString('sv-SE').replace('T', ' ')
+
+    try {
+      await axios.put(`/api/turnos/${event.id}`, {
+        fecha_inicio: formatDate(event.start),
+        fecha_fin: formatDate(event.end),
+      })
+      toast.success('Turno movido')
+    } catch (error: any) {
+      info.revert()
+      toast.error('Ese horario ya está ocupado')
+    }
   }
 
   return (
@@ -84,13 +158,28 @@ export default function CalendarioPage() {
       <CalendarView
         appointments={appointments}
         onDateSelect={handleDateSelect}
+        onEventClick={handleEventClick}
+  onEventDrop={handleEventDrop}
       />
 
       <NewEventDialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={closeDialog}
         patients={patients}
         onSave={handleSaveEvent}
+        initialData={selectedSlot}
+        editingAppointment={editingAppointment}
+      />
+
+      <AppointmentDetailsDialog
+        open={detailsOpen}
+        appointment={selectedAppointment}
+        onDelete={handleDeleteAppointment}
+        onClose={() => setDetailsOpen(false)}
+        onEdit={appointment => {
+          setDetailsOpen(false)
+          handleEditEvent(appointment)
+        }}
       />
     </div>
   )

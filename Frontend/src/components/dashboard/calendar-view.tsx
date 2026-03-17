@@ -1,16 +1,23 @@
 'use client'
-
+import { useFeriados } from '@/hooks/use-feriados'
 import { useMemo } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { DateSelectArg } from '@fullcalendar/core'
+import listPlugin from '@fullcalendar/list'
+import type {
+  DateSelectArg,
+  EventClickArg,
+  EventDropArg,
+} from '@fullcalendar/core'
 import type { Appointment } from '@/lib/types'
 
 interface CalendarViewProps {
   appointments: Appointment[]
+  onEventClick: (id: string) => void
   onDateSelect: (date: string, time?: string) => void
+  onEventDrop: (info: EventDropArg) => void | Promise<void>
 }
 
 const estadoColors: Record<
@@ -37,7 +44,11 @@ const estadoColors: Record<
 export function CalendarView({
   appointments,
   onDateSelect,
+  onEventClick,
+  onEventDrop,
 }: CalendarViewProps) {
+  const { feriadosData } = useFeriados()
+
   const events = useMemo(
     () =>
       appointments.map(a => {
@@ -64,15 +75,36 @@ export function CalendarView({
     onDateSelect(dateStr, timeStr)
   }
 
+  function handleEventClick(clickInfo: EventClickArg) {
+    onEventClick(clickInfo.event.id)
+  }
+
+  const feriadosSet = useMemo(
+    () => new Set(feriadosData?.map((f: any) => f.fecha)),
+    [feriadosData],
+  )
+
+  const feriadosEvents =
+    feriadosData?.map((f: any) => ({
+      id: `feriado-${f.fecha}`,
+      title: `Feriado: ${f.nombre}`,
+      start: f.fecha,
+      allDay: true,
+      color: '#ef4444',
+      textColor: '#fff',
+      editable: false,
+      overlap: false,
+    })) || []
+
   return (
     <div className="fc-psicoagenda">
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
         initialView="timeGridWeek"
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         }}
         locale="es"
         buttonText={{
@@ -80,14 +112,34 @@ export function CalendarView({
           month: 'Mes',
           week: 'Semana',
           day: 'Dia',
+          list: 'Lista',
         }}
-        events={events}
+        eventDidMount={info => {
+          if (info.event.id.startsWith('feriado')) {
+            info.el.title = info.event.title
+          }
+        }}
+        eventAllow={dropInfo => {
+          const date = dropInfo.startStr.split('T')[0]
+          const esFeriado = feriadosSet.has(date)
+          return dropInfo.start >= new Date() && !esFeriado
+        }}
+        events={[...events, ...feriadosEvents]}
         selectable
         selectMirror
         select={handleDateSelect}
-        editable={false}
-        dayMaxEvents={3}
-        slotMinTime="07:00:00"
+        editable={true}
+        selectAllow={selectInfo => {
+          const date = selectInfo.startStr.split('T')[0]
+          const esFeriado = feriadosSet.has(date)
+          return selectInfo.start >= new Date() && !esFeriado
+        }}
+        eventClick={info => {
+          if (info.event.id.startsWith('feriado')) return
+          handleEventClick(info)
+        }}
+        eventDrop={onEventDrop}
+        slotMinTime="08:00:00"
         slotMaxTime="22:00:00"
         allDaySlot={false}
         height="auto"
@@ -106,3 +158,8 @@ export function CalendarView({
     </div>
   )
 }
+
+
+
+
+

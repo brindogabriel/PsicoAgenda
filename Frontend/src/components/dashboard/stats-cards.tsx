@@ -37,19 +37,65 @@ export function StatsCards({ appointments, patients }: StatsCardsProps) {
   ).length
   const activePatients = patients.filter(p => p.estado === 'activo').length
 
-  const nextAppointment = mounted
-    ? (() => {
-        const today = new Date()
-        const now = `${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`
-        return todayAppointments
-          .filter(a => a.horaInicio >= now && a.estado !== 'cancelada')
-          .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))[0]
-      })()
-    : undefined
+  const nextAppointment =
+    mounted && now
+      ? (() => {
+          const current = todayAppointments.find(a => {
+            const [startHour, startMinute] = a.horaInicio.split(':').map(Number)
+            const [endHour, endMinute] = a.horaFin.split(':').map(Number)
+
+            const startDateTime = new Date(now)
+            startDateTime.setHours(startHour, startMinute, 0, 0)
+
+            const endDateTime = new Date(now)
+            endDateTime.setHours(endHour, endMinute, 0, 0)
+
+            return (
+              a.estado !== 'cancelada' &&
+              now >= startDateTime &&
+              now <= endDateTime
+            )
+          })
+
+          if (current) return current
+
+          const nowStr = `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}`
+
+          return todayAppointments
+            .filter(a => a.horaInicio >= nowStr && a.estado !== 'cancelada')
+            .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))[0]
+        })()
+      : undefined
+
+  const isCurrentAppointmentOngoing =
+    mounted && nextAppointment && now
+      ? (() => {
+          const [startHour, startMinute] = nextAppointment.horaInicio
+            .split(':')
+            .map(Number)
+          const [endHour, endMinute] = nextAppointment.horaFin
+            .split(':')
+            .map(Number)
+
+          const startDateTime = new Date(now)
+          startDateTime.setHours(startHour, startMinute, 0, 0)
+
+          const endDateTime = new Date(now)
+          endDateTime.setHours(endHour, endMinute, 0, 0)
+
+          return now >= startDateTime && now <= endDateTime
+        })()
+      : false
 
   const nextAppointmentCountdown =
     mounted && nextAppointment && now
       ? (() => {
+          if (isCurrentAppointmentOngoing) {
+            return 'Ahora'
+          }
+
           const [h, m] = nextAppointment.horaInicio.split(':').map(Number)
           const target = new Date(now)
           target.setHours(h, m, 0, 0)
@@ -101,7 +147,9 @@ export function StatsCards({ appointments, patients }: StatsCardsProps) {
       label: 'Proxima cita',
       value: mounted
         ? nextAppointment
-          ? nextAppointment.horaInicio
+          ? isCurrentAppointmentOngoing
+            ? 'Ahora'
+            : nextAppointment.horaInicio
           : '--:--'
         : '-',
       sub: mounted
