@@ -13,9 +13,15 @@ const eventSchema = Yup.object({
   }),
   pacienteId: Yup.string().required('Selecciona un paciente'),
   fecha: Yup.string().required('La fecha es obligatoria'),
-  horaInicio: Yup.string().required('La hora de inicio es obligatoria'),
+  horaInicio: Yup.string()
+    .required('Horario Requerido')
+    .test('rango-horario', 'Horario fuera de rango', value => {
+      if (!value) return false
+      return value >= '08:00' && value <= '22:00'
+    }),
   duracion: Yup.number().required(),
   tipo: Yup.string().required('El tipo de sesion es obligatorio'),
+  modalidad: Yup.string().required('La modalidad es obligatoria'),
   enviarInvitacion: Yup.boolean(),
   repetir: Yup.boolean(),
   frecuencia: Yup.string(),
@@ -30,6 +36,7 @@ export interface NewEventValues {
   pacienteId: string
   fecha: string
   horaInicio: string
+  modalidad: string
   duracion: number
   enviarInvitacion: boolean
   repetir: boolean
@@ -97,9 +104,7 @@ export function NewEventDialog({
     titulo: editingAppointment
       ? `Terapia - ${editingAppointment.pacienteNombre}`
       : '',
-    pacienteId: editingAppointment
-      ? String(editingAppointment.pacienteId)
-      : '',
+    pacienteId: editingAppointment ? String(editingAppointment.pacienteId) : '',
     fecha: resolvedDate,
     horaInicio: resolvedTime,
     duracion: editingAppointment?.duracion ?? 45,
@@ -110,6 +115,7 @@ export function NewEventDialog({
     diasSemana: [],
     fechaFinRepeticion: '',
     horaFin: '',
+    modalidad: 'presencial',
     notas: editingAppointment?.notas ?? '',
   }
 
@@ -234,7 +240,13 @@ export function NewEventDialog({
                   <label className="text-sm font-medium text-card-foreground">
                     Hora de inicio
                   </label>
-                  <Field type="time" name="horaInicio" className={inputBase} />
+                  <Field
+                    type="time"
+                    name="horaInicio"
+                    min="08:00"
+                    max="22:00"
+                    className={inputBase}
+                  />
                   <ErrorMessage
                     name="horaInicio"
                     component="p"
@@ -271,12 +283,29 @@ export function NewEventDialog({
                   className="text-xs text-red-500"
                 />
               </div>
+              <div>
+                <label className="text-sm font-medium text-card-foreground">
+                  Modalidad
+                </label>
+                <Field as="select" name="modalidad" className={selectBase}>
+                  <option value="">Seleccionar tipo...</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="online">Online</option>
+                </Field>
+                <ErrorMessage
+                  name="tipo"
+                  component="p"
+                  className="text-xs text-red-500"
+                />
+              </div>
 
               {/* Repetir — solo en creación */}
               {!editingAppointment && (
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 text-black dark:text:white">
                   <Field type="checkbox" name="repetir" />
-                  <span>Repetir semanalmente</span>
+                  <span className="text-card-foreground">
+                    Repetir semanalmente
+                  </span>
                 </label>
               )}
 

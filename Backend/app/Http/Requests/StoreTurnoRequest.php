@@ -44,6 +44,8 @@ class StoreTurnoRequest extends FormRequest
             'meeting_url' => 'nullable|string',
             'es_recurrente' => 'boolean',
             'recurrencia_rrule' => 'nullable|string',
+            'repetir' => 'boolean',
+'fecha_fin_repeticion' => 'nullable|date',
         ];
     }
 

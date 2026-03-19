@@ -16,6 +16,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pacientes', PacienteController::class);
     Route::apiResource('turnos', TurnoController::class);
+    Route::post('/turnos/{id}/cancelar-ocurrencia', [TurnoController::class, 'cancelarOcurrencia']);
 });
 
 // Feriados

@@ -85,18 +85,37 @@ export default function CalendarioPage() {
         paciente_id: Number(values.pacienteId),
         fecha_inicio: `${values.fecha} ${values.horaInicio}`,
         fecha_fin: `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())} ${pad(end.getHours())}:${pad(end.getMinutes())}`,
-        modalidad: 'online',
         tipo: values.tipo,
-        notas: values.notas,
+        modalidad: values.modalidad,
+        repetir: values.repetir,
+        fecha_fin_repeticion: values.fechaFinRepeticion || null,
       }
 
-      if (editingAppointment) {
+     
+    if (editingAppointment) {
+      const isRecurrentInstance = String(editingAppointment.id).includes('-')
+
+      if (isRecurrentInstance) {
+        // 🔵 editar UNA ocurrencia
+        const [turnoId, fecha] = String(editingAppointment.id).split('-')
+
+        await axios.post(`/api/turnos/${turnoId}/editar-ocurrencia`, {
+          fecha,
+          nueva_fecha_inicio: payload.fecha_inicio,
+          nueva_fecha_fin: payload.fecha_fin,
+        })
+
+        toast.success('Ocurrencia actualizada')
+      } else {
+        // 🟢 editar turno normal o serie completa
         await axios.put(`/api/turnos/${editingAppointment.id}`, payload)
         toast.success('Turno actualizado')
-      } else {
-        await axios.post('/api/turnos', payload)
-        toast.success('Turno creado')
       }
+    } else {
+      await axios.post('/api/turnos', payload)
+      toast.success('Turno creado')
+    }
+      
 
       await mutate()
       closeDialog()
